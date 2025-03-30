@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  background-color: #FDCAB7;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.flip-card {
+  background-color: transparent;
+  margin-top: 20px;
+  width: 250px;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: #f1d083;
+  color: white;
+  transform: rotateY(180deg);
+}
+</style>
+</head>
+<body>
+<!--Title-->
+<h1>Loteria Game</h1>
+<p><a href="index.html">go back</a></p>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+            color: #7965D2;
+}
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 20%;
+  padding: 10px 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 0px 400px;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+/* Style question cards */
+#question {
+    margin-bottom: 20px;
+}
+#options {
+    display:grid;
+    gap: 10px;
+    grid-template-columns: repeat(2,1fr);
+}
+button{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover{
+    background-color: #f1d083;
+}
+.card-container{
+  height: 150px;
+  width: 200px;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 20px;
+  background-color: rgb(238, 199, 140);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.controls{
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+button{
+  padding: 10px 20px;
+  background-color: #d1ab5f;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover{
+  background-color: #a06045;
+}
+button:disabled{
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+#imageContainer{
+  width: 100%;
+  width: 100px;
+  height: 200px;
+  display: flex;
+  padding: 0px;
+  margin-left: 300px;
+  margin-top: -240px;
+}
+#randomImage{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+</style>
+</head>
+<body>
+<!--Random Card Generator-->
+<div class="card-container">
+  <div class="controls">
+    <label for="duration">Display Duration:</label>
+    <input type="number" id="duration" value="10", min="1">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+  </div>
+  <div id=imageContainer>
+      <img id="randomImage" src="" alt="" style="width:250px;height:300px;">
+  </div>
+</div>
+<style>
+
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card.question {
+  background-color: #a5734a;
+  color: white;
+}
+
+.card.answered {
+  background-color: #4caf50;
+  color: white;
+  cursor: default;
+}
+
+.card.answered::after {
+  content: "✓";
+  font-size: 24px;
+  margin-top: 10px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 80%;
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.submit-btn {
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-btn:hover {
+  background-color: #3a5a8f;
+}
+</style>    
+<script src="card.js"></script>
+<!--All 16 Cards-->
+<div class="row">
+    <div class="column">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="img/dialecto.png" alt="dialecto" style="width:250px;height:300px;">
+            </div>
+            <div class="flip-card-back" id="quiz-container">
+              <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "What does 'El Gallo' mean?", answer: "The Rooster" }];
+                  const container = document.getElementById('quiz-container');
+              const modal = document.createElement('div');
+              modal.className = 'modal';
+              modal.innerHTML = `
+                  <div class="modal-content">
+                      <h2 id="modal-question">Question</h2>
+                      <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                      <button class="submit-btn" id="submit-answer">Submit</button>
+                      <p id="feedback"></p>
+                  </div>
+              `;
+              document.body.appendChild(modal);
+
+              let currentCardIndex = -1;
+
+              // Create cards
+              quizData.forEach((item, index) => {
+                  const card = document.createElement('div');
+                  card.className = 'card question';
+                  card.textContent = item.question;
+                  card.dataset.index = index;
+                  
+                  card.addEventListener('click', function() {
+                      if (!card.classList.contains('answered')) {
+                          currentCardIndex = index;
+                          showQuestionModal(index);
+                      }
+                  });
+                  
+                  container.appendChild(card);
+              });
+
+              function showQuestionModal(index) {
+                  const questionElement = document.getElementById('modal-question');
+                  const answerInput = document.getElementById('answer-input');
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  questionElement.textContent = quizData[index].question;
+                  answerInput.value = '';
+                  feedbackElement.textContent = '';
+                  answerInput.focus();
+                  
+                  modal.style.display = 'flex';
+              }
+
+              document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+              document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') {
+                      checkAnswer();
+                  }
+              });
+
+              function checkAnswer() {
+                  const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                  const correctAnswer = quizData[currentCardIndex].answer;
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  if (userAnswer === correctAnswer) {
+                      // Correct answer
+                      const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                      card.classList.remove('question');
+                      card.classList.add('answered');
+                      modal.style.display = 'none';
+                  } else {
+                      // Incorrect answer
+                      feedbackElement.textContent = "Incorrect. Try again!";
+                      feedbackElement.style.color = "red";
+                  }
+              }
+
+              // Close modal when clicking outside
+              modal.addEventListener('click', function(e) {
+                  if (e.target === modal) {
+                      modal.style.display = 'none';
+                  }
+              });
+          });
+            </script>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="img/La artesania.jpeg" alt="artesania" style="width:250px;height:300px;">
+            </div>
+            <div class="flip-card-back" id="quiz-container-2">
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                // Quiz questions and answers
+                const quizData = [
+                    {question: "What color is 'La Rana'?", answer:"green" }];
+                const container = document.getElementById('quiz-container-2');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                let currentCardIndex = -1;
+
+                  // Create cards
+                  quizData.forEach((item, index) => {
+                      const card = document.createElement('div');
+                      card.className = 'card question';
+                      card.textContent = item.question;
+                      card.dataset.index = index;
+                      
+                      card.addEventListener('click', function() {
+                          if (!card.classList.contains('answered')) {
+                              currentCardIndex = index;
+                              showQuestionModal(index);
+                          }
+                      });
+                      
+                      container.appendChild(card);
+                  });
+
+                  function showQuestionModal(index) {
+                      const questionElement = document.getElementById('modal-question');
+                      const answerInput = document.getElementById('answer-input');
+                      const feedbackElement = document.getElementById('feedback');
+                      
+                      questionElement.textContent = quizData[index].question;
+                      answerInput.value = '';
+                      feedbackElement.textContent = '';
+                      answerInput.focus();
+                      
+                      modal.style.display = 'flex';
+                  }
+
+                  document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                  document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                      if (e.key === 'Enter') {
+                          checkAnswer();
+                      }
+                  });
+
+                  function checkAnswer() {
+                      const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                      const correctAnswer = quizData[currentCardIndex].answer;
+                      const feedbackElement = document.getElementById('feedback');
+                      
+                      if (userAnswer === correctAnswer) {
+                          // Correct answer
+                          const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                          card.classList.remove('question');
+                          card.classList.add('answered');
+                          modal.style.display = 'none';
+                      } else {
+                          // Incorrect answer
+                          feedbackElement.textContent = "Incorrect. Try again!";
+                          feedbackElement.style.color = "red";
+                      }
+                  }
+
+                  // Close modal when clicking outside
+                  modal.addEventListener('click', function(e) {
+                      if (e.target === modal) {
+                          modal.style.display = 'none';
+                      }
+                  });
+              });                
+              </script>
+
+
+              
+            </div>
+            </div>
+        </div>
+    </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/tamal.png" alt="tamal" style="width:250px;height:300px;">
+          </div>
+            <div class="flip-card-back" id="quiz-container-3">
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                // Quiz questions and answers
+                const quizData = [
+                    {question: "Translate: 'Tengo hambre'", answer:"I'm hungry" }];
+                const container = document.getElementById('quiz-container-3');
+                  const modal = document.createElement('div');
+                  modal.className = 'modal';
+                  modal.innerHTML = `
+                      <div class="modal-content">
+                          <h2 id="modal-question">Question</h2>
+                          <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                          <button class="submit-btn" id="submit-answer">Submit</button>
+                          <p id="feedback"></p>
+                      </div>
+                  `;
+                  document.body.appendChild(modal);
+                  // Create cards
+                  quizData.forEach((item, index) => {
+                      const card = document.createElement('div');
+                      card.className = 'card question';
+                      card.textContent = item.question;
+                      card.dataset.index = index;
+                      
+                      card.addEventListener('click', function() {
+                          if (!card.classList.contains('answered')) {
+                              currentCardIndex = index;
+                              showQuestionModal(index);
+                          }
+                      });
+                      
+                      container.appendChild(card);
+                  });
+  
+                  function showQuestionModal(index) {
+                      const questionElement = document.getElementById('modal-question');
+                      const answerInput = document.getElementById('answer-input');
+                      const feedbackElement = document.getElementById('feedback');
+                      
+                      questionElement.textContent = quizData[index].question;
+                      answerInput.value = '';
+                      feedbackElement.textContent = '';
+                      answerInput.focus();
+                      
+                      modal.style.display = 'flex';
+                  }
+  
+                  document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                  document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                      if (e.key === 'Enter') {
+                          checkAnswer();
+                      }
+                  });
+  
+                  function checkAnswer() {
+                      const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                      const correctAnswer = quizData[currentCardIndex].answer;
+                      const feedbackElement = document.getElementById('feedback');
+                      
+                      if (userAnswer === correctAnswer) {
+                          // Correct answer
+                          const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                          card.classList.remove('question');
+                          card.classList.add('answered');
+                          modal.style.display = 'none';
+                      } else {
+                          // Incorrect answer
+                          feedbackElement.textContent = "Incorrect. Try again!";
+                          feedbackElement.style.color = "red";
+                      }
+                  }
+  
+                  // Close modal when clicking outside
+                  modal.addEventListener('click', function(e) {
+                      if (e.target === modal) {
+                          modal.style.display = 'none';
+                      }
+                  });
+              });                
+              </script>
+            </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/mole.jpeg" alt="mole" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-4">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "Which Lotería card represents death?", answer:"La Muerte" }];
+              const container = document.getElementById('quiz-container-4');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/La ropa.jpeg" alt="ropa" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-5">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "How do you say shame in Spanish?", answer:"Vergüenza" }];
+              const container = document.getElementById('quiz-container-5');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/cascada.jpeg" alt="cascada" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-6">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "¿Cómo se dice 'apple' en español?", answer:"manzana"}];
+              const container = document.getElementById('quiz-container-6');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/tortillera.png" alt="tortillera" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-7">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "If someone says 'No manches', what do they mean?", answer:"No way" }];
+              const container = document.getElementById('quiz-container-7');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/playa.jpeg" alt="playa" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-8">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "¿Qué significa 'échale ganas'?", answer:"Keep going" }];
+              const container = document.getElementById('quiz-container-8');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/nance.jpeg" alt="nance" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-9">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "What does '¿Qué onda?' mean?", anwser:"What's up?" }];
+              const container = document.getElementById('quiz-container-9');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/pulsera.jpeg" alt="pulsera" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-10">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "What does 'ayudar' mean?", anwser:"to help" }];
+              const container = document.getElementById('quiz-container-10');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/El chile.jpeg" alt="chile" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-11">
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Quiz questions and answers
+            const quizData = [
+                {question: "¿Cómo se dice 'kindness' en español?",anwser: "amabilidad" }];
+            const container = document.getElementById('quiz-container-11');
+              const modal = document.createElement('div');
+              modal.className = 'modal';
+              modal.innerHTML = `
+                  <div class="modal-content">
+                      <h2 id="modal-question">Question</h2>
+                      <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                      <button class="submit-btn" id="submit-answer">Submit</button>
+                      <p id="feedback"></p>
+                  </div>
+              `;
+              document.body.appendChild(modal);
+              // Create cards
+              quizData.forEach((item, index) => {
+                  const card = document.createElement('div');
+                  card.className = 'card question';
+                  card.textContent = item.question;
+                  card.dataset.index = index;
+                  
+                  card.addEventListener('click', function() {
+                      if (!card.classList.contains('answered')) {
+                          currentCardIndex = index;
+                          showQuestionModal(index);
+                      }
+                  });
+                  
+                  container.appendChild(card);
+              });
+
+              function showQuestionModal(index) {
+                  const questionElement = document.getElementById('modal-question');
+                  const answerInput = document.getElementById('answer-input');
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  questionElement.textContent = quizData[index].question;
+                  answerInput.value = '';
+                  feedbackElement.textContent = '';
+                  answerInput.focus();
+                  
+                  modal.style.display = 'flex';
+              }
+
+              document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+              document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') {
+                      checkAnswer();
+                  }
+              });
+
+              function checkAnswer() {
+                  const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                  const correctAnswer = quizData[currentCardIndex].answer;
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  if (userAnswer === correctAnswer) {
+                      // Correct answer
+                      const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                      card.classList.remove('question');
+                      card.classList.add('answered');
+                      modal.style.display = 'none';
+                  } else {
+                      // Incorrect answer
+                      feedbackElement.textContent = "Incorrect. Try again!";
+                      feedbackElement.style.color = "red";
+                  }
+              }
+
+              // Close modal when clicking outside
+              modal.addEventListener('click', function(e) {
+                  if (e.target === modal) {
+                      modal.style.display = 'none';
+                  }
+              });
+          });                
+          </script>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/mango.jpeg" alt="mango" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-12">
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Quiz questions and answers
+            const quizData = [
+                {question: "¿Cómo se dice 'kindness' en español?",anwser:"amabilidad" }];
+            const container = document.getElementById('quiz-container-12');
+              const modal = document.createElement('div');
+              modal.className = 'modal';
+              modal.innerHTML = `
+                  <div class="modal-content">
+                      <h2 id="modal-question">Question</h2>
+                      <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                      <button class="submit-btn" id="submit-answer">Submit</button>
+                      <p id="feedback"></p>
+                  </div>
+              `;
+              document.body.appendChild(modal);
+              // Create cards
+              quizData.forEach((item, index) => {
+                  const card = document.createElement('div');
+                  card.className = 'card question';
+                  card.textContent = item.question;
+                  card.dataset.index = index;
+                  
+                  card.addEventListener('click', function() {
+                      if (!card.classList.contains('answered')) {
+                          currentCardIndex = index;
+                          showQuestionModal(index);
+                      }
+                  });
+                  
+                  container.appendChild(card);
+              });
+
+              function showQuestionModal(index) {
+                  const questionElement = document.getElementById('modal-question');
+                  const answerInput = document.getElementById('answer-input');
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  questionElement.textContent = quizData[index].question;
+                  answerInput.value = '';
+                  feedbackElement.textContent = '';
+                  answerInput.focus();
+                  
+                  modal.style.display = 'flex';
+              }
+
+              document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+              document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') {
+                      checkAnswer();
+                  }
+              });
+
+              function checkAnswer() {
+                  const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                  const correctAnswer = quizData[currentCardIndex].answer;
+                  const feedbackElement = document.getElementById('feedback');
+                  
+                  if (userAnswer === correctAnswer) {
+                      // Correct answer
+                      const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                      card.classList.remove('question');
+                      card.classList.add('answered');
+                      modal.style.display = 'none';
+                  } else {
+                      // Incorrect answer
+                      feedbackElement.textContent = "Incorrect. Try again!";
+                      feedbackElement.style.color = "red";
+                  }
+              }
+
+              // Close modal when clicking outside
+              modal.addEventListener('click', function(e) {
+                  if (e.target === modal) {
+                      modal.style.display = 'none';
+                  }
+              });
+          });                
+          </script>
+        </div>
+      </div>
+  </div>
+</div>
+</div>
+<div class="row">
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/la sandia.jpeg" alt="sandia" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-13">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "¿Cómo se dice 'Let's have fun' en español?", anwser: "divirtámonos" }];
+              const container = document.getElementById('quiz-container-13');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/perico.jpeg" alt="perico" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-14">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "How do you say 'team' in Spanish?",answer: "equipo"}];
+              const container = document.getElementById('quiz-container-14');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/La rosa.jpeg" alt="rosa" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-15">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "What does 'hacer trampa' mean?",anwser:"to cheat" }];
+              const container = document.getElementById('quiz-container-15');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  <div class="column">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <img src="img/La bandera.jpeg" alt="bandera" style="width:250px;height:300px;">
+          </div>
+          <div class="flip-card-back" id="quiz-container-16">
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+              // Quiz questions and answers
+              const quizData = [
+                  {question: "What does 'perder' mean?", anwser:"to lose" }];
+              const container = document.getElementById('quiz-container-16');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2 id="modal-question">Question</h2>
+                        <input type="text" class="answer-input" id="answer-input" placeholder="Your answer...">
+                        <button class="submit-btn" id="submit-answer">Submit</button>
+                        <p id="feedback"></p>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                // Create cards
+                quizData.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card question';
+                    card.textContent = item.question;
+                    card.dataset.index = index;
+                    
+                    card.addEventListener('click', function() {
+                        if (!card.classList.contains('answered')) {
+                            currentCardIndex = index;
+                            showQuestionModal(index);
+                        }
+                    });
+                    
+                    container.appendChild(card);
+                });
+
+                function showQuestionModal(index) {
+                    const questionElement = document.getElementById('modal-question');
+                    const answerInput = document.getElementById('answer-input');
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    questionElement.textContent = quizData[index].question;
+                    answerInput.value = '';
+                    feedbackElement.textContent = '';
+                    answerInput.focus();
+                    
+                    modal.style.display = 'flex';
+                }
+
+                document.getElementById('submit-answer').addEventListener('click', checkAnswer);
+                document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+
+                function checkAnswer() {
+                    const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+                    const correctAnswer = quizData[currentCardIndex].answer;
+                    const feedbackElement = document.getElementById('feedback');
+                    
+                    if (userAnswer === correctAnswer) {
+                        // Correct answer
+                        const card = document.querySelector(`.card[data-index="${currentCardIndex}"]`);
+                        card.classList.remove('question');
+                        card.classList.add('answered');
+                        modal.style.display = 'none';
+                    } else {
+                        // Incorrect answer
+                        feedbackElement.textContent = "Incorrect. Try again!";
+                        feedbackElement.style.color = "red";
+                    }
+                }
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });                
+            </script>
+
+            
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+</body>
+</html>
+</body>
+</html>
